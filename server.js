@@ -6,6 +6,7 @@ const cors = require('cors')
 // require route files
 const exampleRoutes = require('./app/routes/example_routes')
 const userRoutes = require('./app/routes/user_routes')
+const forumRoutes = require('./app/routes/forum_routes')
 
 // require middleware
 const errorHandler = require('./lib/error_handler')
@@ -27,9 +28,9 @@ const clientDevPort = 7165
 // use new version of URL parser
 // use createIndex instead of deprecated ensureIndex
 mongoose.connect(db, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true
+	useNewUrlParser: true,
+	useCreateIndex: true,
+	useUnifiedTopology: true
 })
 
 // instantiate express application object
@@ -37,7 +38,9 @@ const app = express()
 
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}` }))
+app.use(cors({
+	origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}`
+}))
 
 // define port for API to run on
 const port = process.env.PORT || serverDevPort
@@ -50,7 +53,9 @@ app.use(auth)
 // The method `.use` sets up middleware for the Express application
 app.use(express.json())
 // this parses requests sent by `$.ajax`, which use a different content type
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({
+	extended: true
+}))
 
 // log each request as it comes in for debugging
 app.use(requestLogger)
@@ -58,6 +63,7 @@ app.use(requestLogger)
 // register route files
 app.use(exampleRoutes)
 app.use(userRoutes)
+app.use(forumRoutes)
 
 // register error handling middleware
 // note that this comes after the route middlewares, because it needs to be
@@ -66,7 +72,7 @@ app.use(errorHandler)
 
 // run API on designated port (4741 in this case)
 app.listen(port, () => {
-  console.log('listening on port ' + port)
+	console.log('listening on port ' + port)
 })
 
 // needed for testing
