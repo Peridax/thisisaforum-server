@@ -18,3 +18,6 @@ const localDb = process.env.TESTENV ? database.test : database.development
 const currentDb = process.env.DB_URI || localDb
 
 module.exports = currentDb
+
+// DB Connection
+// heroku config:set DB_URI="mongodb+srv://Admin:a9oiUktwXoA1ylUp@cluster0.lffrj.mongodb.net/thisisaforum-server?retryWrites=true&w=majority"
