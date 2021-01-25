@@ -17,8 +17,42 @@ router.post('/subforum', requireToken, (req, res, next) => {
   const sub = req.body.subforum
   sub.owner = req.user._id
 
-  Subforum.create(sub)
+  Promise.resolve(sub)
+    .then(data => {
+      if (!data) {
+        throw new BadParamsError()
+      }
+      return sub
+    })
+    .then(subforum => Subforum.create(subforum))
+    .then(errors.handle404)
     .then(subforum => res.status(201).json({ subforum: subforum.toObject() }))
+    .catch(next)
+})
+
+// Update subforum
+router.patch('/subforum/:id', requireToken, (req, res, next) => {
+  const title = req.body.subforum.title
+  const id = req.params.id
+
+  Subforum.findById(id)
+    .then(errors.handle404)
+    .then(subforum => {
+      subforum.title = title
+      return subforum.save()
+    })
+    .then(subforum => res.status(201).json({ subforum: subforum.toObject() }))
+    .catch(next)
+})
+
+// Delete subforum
+router.delete('/subforum/:id', requireToken, (req, res, next) => {
+  const id = req.params.id
+
+  Subforum.findById(id)
+    .then(errors.handle404)
+    .then(subforum => subforum.delete())
+    .then(() => res.sendStatus(204))
     .catch(next)
 })
 
