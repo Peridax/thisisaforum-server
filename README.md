@@ -1,5 +1,8 @@
 # thisisaforum-server
 
+### Links
+You can access the client repo [here](https://github.com/Peridax/thisisaforum-client). You can also access the deployed backend [here](https://thisisaforum-server.herokuapp.com/).
+
 ### Description
 This is the backend API server for *thisisaforum*. All the backend logic is handled here. The end goal for this project is to create a forum website where users can chat with each other via threads within subforums. Subforums categorize the chats. Users can also reply to threads.
 

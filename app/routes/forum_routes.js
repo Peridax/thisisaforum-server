@@ -2,13 +2,13 @@ const express = require('express')
 const router = express.Router()
 
 const Subforum = require('./../models/subforum')
+const Thread = require('../models/thread')
 
 const passport = require('passport')
 const errors = require('./../../lib/custom_errors')
 
 // Errors
 const BadParamsError = errors.BadParamsError
-const BadCredentialsError = errors.BadCredentialsError
 
 const requireToken = passport.authenticate('bearer', { session: false })
 
@@ -60,6 +60,15 @@ router.delete('/subforum/:id', requireToken, (req, res, next) => {
 router.get('/subforum', requireToken, (req, res, next) => {
   Subforum.find()
     .then(subforums => res.status(200).json({ subforums: subforums.map(subforum => subforum.toObject()) }))
+    .catch(next)
+})
+
+// Get single subforum
+router.get('/subforum/:title', requireToken, (req, res, next) => {
+  Subforum.findOne({ title: req.params.title })
+    .populate('threads.owner', 'email')
+    .then(errors.handle404)
+    .then(subforum => res.status(201).json({ subforum }))
     .catch(next)
 })
 module.exports = router
